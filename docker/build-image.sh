@@ -21,19 +21,23 @@ echo ""
 echo "##### CARMACadillacSrx2013ControllerDriver Docker Image Build Script #####"
 echo ""
 
+cd "$(dirname "$0")"
+cd ..
+
 if [[ -z "$1" ]]; then
-    TAG=latest
+    TAG=`cat srx_controller/package.xml | grep '<version>' | awk -F '[<>]' '/version/{print $3}'`
 else
     TAG="$1"
 fi
 
-echo "Building docker image for CARMACadillacSrx2013ControllerDriver"
+echo "Building docker image for CARMACadillacSrx2013ControllerDriver..."
 echo "Final image name: $USERNAME/$IMAGE:$TAG"
 
-cd "$(dirname "$0")"
-cd ..
+docker build --no-cache -t $USERNAME/$IMAGE:$TAG \
+    --build-arg VERSION="$TAG" \
+    --build-arg VCS_REF=`git rev-parse --short HEAD` \
+    --build-arg BUILD_DATE=`date -u +”%Y-%m-%dT%H:%M:%SZ”` .
 
-docker build -t $USERNAME/$IMAGE:$TAG .
 docker tag $USERNAME/$IMAGE:$TAG $USERNAME/$IMAGE:latest
 
 echo ""
