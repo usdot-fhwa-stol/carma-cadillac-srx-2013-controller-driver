@@ -53,7 +53,7 @@ SRXApplication::SRXApplication(int argc, char **argv) : cav::DriverApplication(a
 
 void SRXApplication::initialize() {
 
-    control_nh_.reset(new ros::NodeHandle("~control"));
+    control_nh_.reset(new ros::NodeHandle("/control"));
 
     pnh_->param<double>("k_p", k_p_, 0.1);
     pnh_->param<double>("k_i", k_i_, 0.01);
