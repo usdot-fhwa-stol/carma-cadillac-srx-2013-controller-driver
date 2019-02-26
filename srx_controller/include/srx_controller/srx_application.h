@@ -119,6 +119,7 @@ private:
     ros::Subscriber effort_sub_, speed_sub_;
     ros::ServiceServer get_lights_srv_, set_lights_srv_, enable_robotic_srv_;
     ros::Publisher robotic_status_pub_;
+    ros::Publisher light_bar_status_pub_; //MF 02/2019: Added for light bar status topic
     std::shared_ptr<ros::NodeHandle> control_nh_;
     ros::WallTimer status_publisher_timer_;
 
@@ -267,6 +268,7 @@ private:
 
     /**
      * @brief Timer Callback that updates the robot_status topic
+     * MF 02/2019: Updated to include the lightbar status topic(s)
      */
     void statusUpdateTimerCB(const ros::WallTimerEvent &);
 
