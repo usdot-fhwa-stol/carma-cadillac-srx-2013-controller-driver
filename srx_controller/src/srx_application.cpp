@@ -37,6 +37,9 @@
 
 #include <cav_msgs/SpeedAccel.h>
 #include <cav_msgs/RobotEnabled.h>
+#include <cav_msgs/RobotEnabled.h>
+
+#include <cav_msgs/LightBarStatus.h> //MF 02/2019: Added for light bar status topic
 
 #include <std_msgs/Float32.h>
 
@@ -174,9 +177,15 @@ void SRXApplication::initialize() {
 
     api_list_.push_back(speed_sub_.getTopic());
 
+    //topics
     robotic_status_pub_ = control_nh_->advertise<cav_msgs::RobotEnabled>("robot_status", 1);
     api_list_.push_back(robotic_status_pub_.getTopic());
 
+    //MF 02/2019: Topic to publish the light bar status that is based off of the front lights.
+    light_bar_status_pub_ = control_nh_->advertise<cav_msgs::LightBarStatus>("light_bar_status", 10);
+    api_list_.push_back(light_bar_status_pub_.getTopic());
+
+    //services
     get_lights_srv_ = control_nh_->advertiseService("get_lights", &SRXApplication::get_lights_cb, this);
     api_list_.push_back(get_lights_srv_.getService());
 
@@ -186,9 +195,8 @@ void SRXApplication::initialize() {
     enable_robotic_srv_ = control_nh_->advertiseService("enable_robotic", &SRXApplication::enable_robotic_cb, this);
     api_list_.push_back(enable_robotic_srv_.getService());
 
-
+    //timer loop
     status_publisher_timer_ = nh_->createWallTimer(ros::WallDuration(ros::Rate(2)),&SRXApplication::statusUpdateTimerCB, this);
-
     status_publisher_timer_.start();
 
     cav_msgs::DriverStatus status;
@@ -447,6 +455,19 @@ void SRXApplication::statusUpdateTimerCB(const ros::WallTimerEvent &) {
     msg.torque          = throttleOutputFeedback.InjectedTorque;
 
     robotic_status_pub_.publish(msg);
+
+    //MF 02/2019: Added topics for lightbar status
+    cav_msgs::LightBarStatus light_bar_msg;
+
+    //light_bar_msg = front_lights_status_; //MF 02/2019: Only basing the status on the front lights
+    light_bar_msg.green_flash = front_lights_status_.GreenFlashOn;
+    light_bar_msg.left_arrow  = front_lights_status_.LeftArrowOn;
+    light_bar_msg.right_arrow = front_lights_status_.RightArrowOn;
+    light_bar_msg.green_solid = front_lights_status_.GreenSolidOn;
+    light_bar_msg.flash       = front_lights_status_.FlashOn;
+    light_bar_msg.takedown    = front_lights_status_.TakeDownOn;
+
+    light_bar_status_pub_.publish(light_bar_msg); //MF 02/2019
 }
 
 void SRXApplication::setFault(bool &set, const std::string &msg) {

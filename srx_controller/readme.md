@@ -23,6 +23,9 @@ sent_messages ( can_msgs/Frame )
 /diagnostics (diagnostic_msgs/DiagnosticArray)
 > This driver uses the diagnostic_updater API to publish diagnostic statuses to the /diagnostic topic.
 
+/control/light_bar_status (cav_msgs/LightBarStatus)
+> This publishes the light bar status based on the front lights. Currently, the front and rear can be set once, and not separately. Therefore basing this status on the front light bar.
+
 ### Subscribed Topics
 received_messages ( can_msgs/Frame )
 > We listen to this topic for messages from the dbw module
