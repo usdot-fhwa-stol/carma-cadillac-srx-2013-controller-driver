@@ -49,7 +49,7 @@ jobs:
           name: Pull Deps
           command: |
             source ${INIT_ENV}
-            ./CARMACadillacSrx2013ControllerDriver/docker/checkout.sh ${PWD}
+            ./src/CARMACadillacSrx2013ControllerDriver/docker/checkout.sh ${PWD}
       - run:
           name: Build Driver
           command: |
