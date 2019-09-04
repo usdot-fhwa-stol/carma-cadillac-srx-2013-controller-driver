@@ -43,20 +43,13 @@ jobs:
             mkdir src
             cd src
             mkdir CARMACadillacSrx2013ControllerDriver
-            mkdir CARMAMsgs
-            mkdir CARMAUtils
       - checkout:
           path: src/CARMACadillacSrx2013ControllerDriver
       - run: 
-          name: Pull CARMAMsgs
+          name: Pull Deps
           command: |
             source ${INIT_ENV}
-            git clone -b develop --depth 1 git@github.com:usdot-fhwa-stol/CARMAMsgs.git src/CARMAMsgs
-      - run: 
-          name: Pull CARMAUtils
-          command: |
-            source ${INIT_ENV}
-            git clone -b develop --depth 1 git@github.com:usdot-fhwa-stol/CARMAUtils.git src/CARMAUtils
+            ./src/CARMACadillacSrx2013ControllerDriver/docker/checkout.sh ${PWD}
       - run:
           name: Build Driver
           command: |
